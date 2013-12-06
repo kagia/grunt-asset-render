@@ -26,7 +26,7 @@ In your project's Gruntfile, add a section named `asset_render` to the data obje
 grunt.initConfig({
   asset_render: {
     options: {
-      // Task-specific options go here.
+      template: 'path_to_my_handlebars_template',
     },
     your_target: {
       // Target-specific file lists and/or options go here.
@@ -37,53 +37,43 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
+#### options.template (required)
 Type: `String`
-Default value: `',  '`
 
-A string value that is used to do something with whatever.
+the path to your handlebars template.
 
-#### options.punctuation
+#### options.delimiters
 Type: `String`
-Default value: `'.'`
+Default value: `'{{ }}'`
 
-A string value that is used to do something else with whatever else.
+delimiters for the template engine to use.
 
 ### Usage Examples
 
 #### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
-
-```js
-grunt.initConfig({
-  asset_render: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+In this example, the default options are used to write script tags.
 
 ```js
 grunt.initConfig({
   asset_render: {
     options: {
-      separator: ': ',
-      punctuation: ' !!!',
+      template: 'templates/scripts_include.handlebars',
     },
     files: {
-      'dest/default_options': ['src/testing', 'src/123'],
+      'dest/output.html': 'src/**/*.js',
     },
   },
 });
+```
+our template `templates/scripts_include.handlebars` :
+```
+{{#urls}}
+  <script src="{{url}}"></script>
+{{/urls}}
 ```
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
-_(Nothing yet)_
+v1.0 presenting grunt-asset-render!
