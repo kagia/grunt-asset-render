@@ -1,0 +1,45 @@
+{
+  "name": "grunt-asset-render",
+  "description": "injects assets into templates",
+  "version": "0.1.0",
+  "homepage": "https://github.com/kagia/grunt-asset-render",
+  "author": {
+    "name": "Benjamin Kagia",
+    "email": "kagia@server.fake",
+    "url": "http://www.galancia.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kagia/grunt-asset-render.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kagia/grunt-asset-render/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/kagia/grunt-asset-render/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "Gruntfile.js",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt": "~0.4.2"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.2"
+  },
+  "keywords": [
+    "script",
+    "inject",
+    "link"
+  ]
+}
