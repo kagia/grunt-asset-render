@@ -32,20 +32,23 @@ module.exports = function(grunt) {
     asset_render: {
       default_options: {
         options: {
+          template: 'test/fixtures/default.handlebars'
         },
         files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123'],
+          'tmp/default_options.html': ['test/fixtures/testing', 'test/fixtures/123'],
         },
       },
+
       custom_options: {
         options: {
-          separator: ': ',
-          punctuation: ' !!!',
+          template: 'test/fixtures/custom.handlebars',
+          delimiters: '!... ...'
         },
+
         files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123'],
+          'tmp/custom_options.html': ['test/fixtures/testing', 'test/fixtures/123'],
         },
-      },
+      }
     },
 
     // Unit tests.
