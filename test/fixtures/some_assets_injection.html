@@ -1,0 +1,38 @@
+<html>
+    <body>
+    <!-- START -->
+    <ul>
+        <li>test/fixtures/assets/test.css</li>
+        <li>test/fixtures/assets/test.js</li>
+    </ul>
+    <!-- END -->
+
+    we can inject again
+    <!-- START -->
+    <ul>
+        <li>test/fixtures/assets/test.css</li>
+        <li>test/fixtures/assets/test.js</li>
+    </ul>
+    <!-- END -->
+
+    notice white space outside the token can be ignored
+    <!--START     -->
+    <ul>
+        <li>test/fixtures/assets/test.css</li>
+        <li>test/fixtures/assets/test.js</li>
+    </ul>
+    <!--END-->
+
+    different indentation too!
+            <!-- START -->
+            <ul>
+                <li>test/fixtures/assets/test.css</li>
+                <li>test/fixtures/assets/test.js</li>
+            </ul>
+            <!-- END -->
+
+    this looks like a tag:
+    <!-- WOOMPA LOOMPA -->
+    but it is not, so it is ignored!
+    </body>
+</html>
