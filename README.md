@@ -51,8 +51,16 @@ Default value: `false`
 if this is true, templates will be merged into the destination file rather than overwriting it.
 Useful for linking assets (i.e, stylesheets, scripts, e.t.c)
 
+#### options.promotions
+Type: `Array`
+Default value: `[]`
+
+useful if certain assets need to be prioritized over others.
+Read the section on [promotions](#promotions) below.
+
 ### Injection options.
 The options below are only used when `options.inject` is `true`
+Read the sction on [injection](#injection) below.
 
 #### options.delimiters
 Type: `String`
@@ -199,9 +207,51 @@ The result is that our rendered template will be merged into the destination fil
 </html>
 ```
 
+## Promotions
+Sometimes the order that assets are rendered is important. For example if you are using a javascript library (i.e JQuery), you would like it to be added to your page before your script or plugins. Or if one stylesheet should override another. You get the idea.
+
+Here is an example using JQuery.
+```js
+asset_render: {
+  scripts: {
+    options: {
+      template: 'templates/scripts_include.handlebars',
+      inject: true,
+      promotions: ['**/jquery.js', '**/jquery.*']
+    },
+
+    files: {
+      'index.html': 'js/**/*.js'
+    }
+  }
+}
+```
+
+In the above example we have two promotions.
+  1. `'**/jquery.js'` this promotes JQuery
+  2. `'**/jquery.*'` this promotes JQuery plugins (i.e 'jquery.fittext.js')
+
+This means that Jquery will be promoted to the top, _then_ it's plugins, and _finally_ all other scripts will come after.
+
+### Globing
+
+you can use all the syntax you use to define source files. You can even do this:
+
+```js
+options = [
+  ['js/vendor/**/*.js', '!js/vendor/indipendent.js']
+]
+```
+In the above case we want vendor styles to be priorotized but there's one that doesn't need to be prioritized; perhaps it runs on it's own. Just remember to enclose everything in an array `[]`.
+
+Have fun, and keep it simple!
 
 ## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/). All your work should be in it's own branch, which inturn should be a branch of the development branch.
+In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/). All your work should be in the development branch.
 
 ## Release History
-### v1.0 presenting grunt-asset-render!
+#### v1.0 presenting grunt-asset-render!
+
+#### v1.0.1 fixes
+  - fixed versioning
+  - updated docs
