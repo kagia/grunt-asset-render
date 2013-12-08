@@ -42,7 +42,8 @@
     "template",
     "inject",
     "link",
-    "publish"
+    "publish",
+    "gruntplugin"
   ],
   "dependencies": {
     "hogan.js": "~2.0.0",
