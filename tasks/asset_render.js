@@ -36,30 +36,34 @@ module.exports = function(grunt) {
       inject: false,
       start_word: 'START',
       end_word: 'END',
+      promotions: []
     });
 
     var data = this.data;
     // Iterate over all specified file groups.
     this.files.forEach(function(filePair) {
       grunt.log.writeln("Prepairing files for " + filePair.dest);
-      var files = [];
+      var files = filePair.src;
 
       // format source filepaths.
-      var src = filePair.src.map(function(filepath) {
-        grunt.log.writeln("    adding file: " + filepath);
-
-        var context = {'file':filepath};
-        files.push(context);
-      });
-
-      if (files.length === 0) {
+      if (filePair.src.length === 0) {
         grunt.log.writeln("    no input files found, skipping...");
         return;
+      }
+
+      if (options.promotions.length > 0) {
+        var globSort = require('../lib/glob-sort');
+        files = globSort(files, options.promotions);
       }
 
       var template = grunt.file.read(options.template);
       
       template = hogan.compile(template);
+
+      files = files.map(function(filepath) {
+        grunt.log.writeln('    found : ' + filepath);
+        return {'file':filepath};
+      });
 
       var output = template.render({'files':files});
       output = output.replace(/(?:\n|\r\n)+\s*$/, '');
