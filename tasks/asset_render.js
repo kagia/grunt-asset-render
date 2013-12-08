@@ -42,17 +42,17 @@ module.exports = function(grunt) {
     // Iterate over all specified file groups.
     this.files.forEach(function(filePair) {
       grunt.log.writeln("Prepairing files for " + filePair.dest);
-      var urls = [];
+      var files = [];
 
       // format source filepaths.
       var src = filePair.src.map(function(filepath) {
-        grunt.log.writeln("    adding url: " + filepath);
+        grunt.log.writeln("    adding file: " + filepath);
 
-        var context = {'url':filepath};
-        urls.push(context);
+        var context = {'file':filepath};
+        files.push(context);
       });
 
-      if (urls.length === 0) {
+      if (files.length === 0) {
         grunt.log.writeln("    no input files found, skipping...");
         return;
       }
@@ -61,7 +61,7 @@ module.exports = function(grunt) {
       
       template = hogan.compile(template);
 
-      var output = template.render({'urls':urls});
+      var output = template.render({'files':files});
       output = output.replace(/(?:\n|\r\n)+\s*$/, '');
 
       if (options.inject) {
