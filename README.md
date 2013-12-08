@@ -76,4 +76,9 @@ our template `templates/scripts_include.handlebars` :
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
-v1.0 presenting grunt-asset-render!
+### v1.0 presenting grunt-asset-render!
+The first release!
+
+### v1.0.1 small fixes
+fixed: vesrioning
+updated: documentation
