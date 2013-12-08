@@ -2,6 +2,8 @@
 
 > injects assets into templates
 
+[![Build Status](https://travis-ci.org/kagia/grunt-asset-render.png?branch=v2.0.0)](https://travis-ci.org/kagia/grunt-asset-render)
+
 ## Getting Started
 This plugin requires Grunt `~0.4.2`
 
