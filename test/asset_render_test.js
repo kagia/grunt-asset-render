@@ -27,22 +27,67 @@ exports.asset_render = {
     // setup here if necessary
     done();
   },
-  default_options: function(test) {
-    test.expect(1);
+  render_to_file: function(test) {
+    test.expect(3);
+    test.equal(grunt.file.exists('tmp/no_asset.html'), false, 'no template should be generated');
 
-    var actual = grunt.file.read('tmp/default_options.html');
-    var expected = grunt.file.read('test/expected/default_options.html');
-    test.equal(actual, expected, 'should describe what the default behavior is.');
+    var actual = grunt.file.read('tmp/all_assets.html');
+    var expected = grunt.file.read('test/expected/all_assets.html');
+    test.equal(actual, expected, 'the template should contain all assets');
 
-    test.done();
-  },
-  custom_options: function(test) {
-    test.expect(1);
-
-    var actual = grunt.file.read('tmp/custom_options.html');
-    var expected = grunt.file.read('test/expected/custom_options.html');
-    test.equal(actual, expected, 'should describe what the custom option(s) behavior is.');
+    actual = grunt.file.read('tmp/some_assets.html');
+    expected = grunt.file.read('test/expected/some_assets.html');
+    test.equal(actual, expected, 'the template should contain some assets');
 
     test.done();
   },
+
+  inject_to_file: function(test) {
+    test.expect(2);
+
+    var actual = grunt.file.read('test/fixtures/no_asset_injection.html');
+    var expected = grunt.file.read('test/expected/no_asset_injection.html');
+    test.equal(actual, expected, 'The file should contain no assets');
+
+    actual = grunt.file.read('test/fixtures/some_assets_injection.html');
+    expected = grunt.file.read('test/expected/some_assets_injection.html');
+    test.equal(actual, expected, 'The file should contain some assets');
+
+    test.done();
+  },
+
+  custom_tag_injection: function(test) {
+    test.expect(1);
+
+    var actual = grunt.file.read('test/fixtures/custom_delimiters_injection.html');
+    var expected = grunt.file.read('test/expected/custom_delimiters_injection.html');
+    test.equal(actual, expected, 'the file should contain some assets');
+
+    test.done();
+  },
+
+  inline_injection: function(test) {
+    test.expect(1);
+
+    var actual = grunt.file.read('test/fixtures/inline_injection.html');
+    var expected = grunt.file.read('test/expected/inline_injection.html');
+    test.equal(actual, expected, 'the file should contain a single line');
+
+    test.done();
+  },
+
+  promotion: function(test) {
+    test.expect(2);
+
+    var actual = grunt.file.read('tmp/asset_promotion.html');
+    var expected = grunt.file.read('test/expected/asset_promotion.html');
+    test.equal(actual, expected, 'promoted asset should be first');
+
+    actual = grunt.file.read('tmp/alternate_asset_promotion.html');
+    expected = grunt.file.read('test/expected/alternate_asset_promotion.html');
+    test.equal(actual, expected, 'promoted asset should be first');
+
+    test.done();
+  },
+
 };
