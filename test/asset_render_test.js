@@ -76,4 +76,18 @@ exports.asset_render = {
     test.done();
   },
 
+  promotion: function(test) {
+    test.expect(2);
+
+    var actual = grunt.file.read('tmp/asset_promotion.html');
+    var expected = grunt.file.read('test/expected/asset_promotion.html');
+    test.equal(actual, expected, 'promoted asset should be first');
+
+    actual = grunt.file.read('tmp/alternate_asset_promotion.html');
+    expected = grunt.file.read('test/expected/alternate_asset_promotion.html');
+    test.equal(actual, expected, 'promoted asset should be first');
+
+    test.done();
+  },
+
 };

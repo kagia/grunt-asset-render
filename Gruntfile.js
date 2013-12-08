@@ -42,8 +42,8 @@ module.exports = function(grunt) {
           'tmp/some_assets.html': [
                                   'test/fixtures/assets/test.css',
                                   'test/fixtures/assets/test.js',
-                                  'test/fixtures/assets/test/*.html',
-                                  '!test/fixtures/test/test/testing2.html'
+                                  'test/fixtures/assets/*.html',
+                                  '!test/fixtures/assets/testing2.html'
                                   ],
         }
       },
@@ -61,8 +61,8 @@ module.exports = function(grunt) {
           'test/fixtures/some_assets_injection.html': [
                                   'test/fixtures/assets/test.css',
                                   'test/fixtures/assets/test.js',
-                                  'test/fixtures/assets/test/*.html',
-                                  '!test/fixtures/test/test/testing2.html'
+                                  'test/fixtures/assets/*.html',
+                                  '!test/fixtures/assets/testing2.html'
                                   ],
         }
       },
@@ -81,8 +81,8 @@ module.exports = function(grunt) {
           'test/fixtures/custom_delimiters_injection.html': [
                                   'test/fixtures/assets/test.css',
                                   'test/fixtures/assets/test.js',
-                                  'test/fixtures/assets/test/*.html',
-                                  '!test/fixtures/test/test/testing2.html'
+                                  'test/fixtures/assets/*.html',
+                                  '!test/fixtures/assets/testing2.html'
                                   ],
         }
       },
@@ -98,9 +98,41 @@ module.exports = function(grunt) {
           'test/fixtures/inline_injection.html': [
                                   'test/fixtures/assets/test.css',
                                   'test/fixtures/assets/test.js',
-                                  'test/fixtures/assets/test/*.html',
-                                  '!test/fixtures/test/test/testing2.html'
+                                  'test/fixtures/assets/*.html',
+                                  '!test/fixtures/assets/testing2.html'
                                   ],
+        }
+      },
+
+      promotion: {
+        options: {
+          template: 'test/fixtures/list_assets.handlebars',
+          promotions: ['test/fixtures/assets/test.js']
+        },
+
+        files: {
+          'tmp/asset_promotion.html': [
+                                  'test/fixtures/assets/test.css',
+                                  'test/fixtures/assets/test.js',
+                                  'test/fixtures/assets/*.html',
+                                  '!test/fixtures/assets/testing2.html'
+                                  ],
+        }
+      },
+
+      alternate_promotion: {
+        options: {
+          template: 'test/fixtures/list_assets.handlebars',
+          promotions: ['test/fixtures/assets/testing.html']
+        },
+
+        files: {
+          'tmp/alternate_asset_promotion.html': [
+                                  'test/fixtures/assets/test.css',
+                                  'test/fixtures/assets/test.js',
+                                  'test/fixtures/assets/*.html',
+                                  '!test/fixtures/assets/testing2.html'
+                                  ]
         }
       }
     },
