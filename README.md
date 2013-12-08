@@ -26,10 +26,12 @@ In your project's Gruntfile, add a section named `asset_render` to the data obje
 grunt.initConfig({
   asset_render: {
     options: {
-      template: 'path_to_my_handlebars_template',
+      template: 'path/to/template.handlebars',
     },
     your_target: {
-      // Target-specific file lists and/or options go here.
+      files: {
+        'dest/output.txt' : ['css/**/*.css', 'img/file.jpg']
+      }
     },
   },
 });
@@ -42,38 +44,164 @@ Type: `String`
 
 the path to your handlebars template.
 
+#### options.inject
+Type: `Boolean`
+Default value: `false`
+
+if this is true, templates will be merged into the destination file rather than overwriting it.
+Useful for linking assets (i.e, stylesheets, scripts, e.t.c)
+
+### Injection options.
+The options below are only used when `options.inject` is `true`
+
 #### options.delimiters
 Type: `String`
-Default value: `'{{ }}'`
+Default value: `'<!-- -->'`
 
-delimiters for the template engine to use.
+the injection engine uses these to locate opening and closing tags.
+**note** they are space separated.
 
-### Usage Examples
+#### options.start_word
+Type: `String`
+Default value: `'START'`
 
-#### Default Options
-In this example, the default options are used to write script tags.
+the injection engine uses this to validate an opening tag.
 
+#### options.end_word
+Type: `String`
+Default value: `'END'`
+
+the injection engine uses this to validate a closing tag.
+
+## Usage Examples
+
+#### Rendering templates
+In this example, we use a template to render several files.
+
+Our template
+
+`templates/list_assets.handlebars`
+```handlebars
+<ul>
+{{#files}}
+    <li>{{file}}</li>
+{{/files}}
+</ul>
+```
+
+
+Our Task Configuration
+
+`Gruntfile.js`
 ```js
-grunt.initConfig({
-  asset_render: {
+asset_render: {
+  render_to_file: {
     options: {
-      template: 'templates/scripts_include.handlebars',
+      template: 'templates/list_assets.handlebars'
     },
+
     files: {
-      'dest/output.html': 'src/**/*.js',
-    },
+      'dest/my_scripts.html': 'js/**/*.js',
+      'dest/my_images.html': 'img/**/*{jpg,png,jpeg}',
+      'dest/my_documents.html': [
+                              'docs/budget/june2013.xls',
+                              'docs/statements/*.pdf',
+                              '!docs/statements/*2012.pdf'
+                              ],
+    }
   },
-});
+},
 ```
-our template `templates/scripts_include.handlebars` :
+
+
+With the above configuration, the task will create several files. Lets look at one of them:
+
+`dest/my_images.html`
+```html
+<ul>
+  <li>img/me/myface.jpg</li>
+  <li>img/icanhazcheezeburger.png</li>
+</ul>
 ```
-{{#urls}}
-  <script src="{{url}}"></script>
-{{/urls}}
+
+## Injection
+Rendering templates is already cool, but usually we want to include our templates into other files.
+
+We can use the injection feature to achieve this. The injection engine examines the destination file for opening and closing
+tags, by default `'<!-- START -->'` and `'<!-- END -->'`. The injection engine will replace the content of these tags with your template.
+
+First we define our destination file.
+
+`dest/index.html`
+```html
+<html>
+  <head>
+    <title>my image gallery</title>
+    <style>
+    .thumbnail {float:left;}
+    </style>
+  </head>
+  <body>
+    <!-- START -->
+    <!-- END -->
+  </body>
+</html>
 ```
+
+Then our template.
+
+`templates/thumbnails.handlebars`
+```handlebars
+{{#files}}
+  <div class="thumbnail">
+    <img src="{{file}}">
+  </div>
+{{/files}}
+```
+
+And finally remember to activate the `inject` option.
+
+`Gruntfile.js`
+```js
+asset_render: {
+  my_cat_gallery: {
+    options: {
+      template: 'templates/thumbnails.handlebars',
+      inject: true,
+    },
+
+    files: {
+      'dest/index.html: 'gallery/cats/**/*'
+    }
+  },
+}
+```
+
+The result is that our rendered template will be merged into the destination file, so:
+```html
+<html>
+  <head>
+    <title>my image gallery</title>
+    <style>
+    .thumbnail {float:left;}
+    </style>
+  </head>
+  <body>
+    <!-- START -->
+    <div class="thumbnail">
+      <img src="gallery/cats/socks_sleeping.jpg">
+    </div>
+    <div class="thumbnail">
+      <img src="gallery/cats/socks_turning_away.jpg">
+    </div>
+    <!-- END -->
+  </body>
+</html>
+```
+
 
 ## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
+In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/). All your work should be in it's own branch, which inturn should be a branch of the development branch.
 
 ## Release History
-v1.0 presenting grunt-asset-render!
+### v1.0 presenting grunt-asset-render!
