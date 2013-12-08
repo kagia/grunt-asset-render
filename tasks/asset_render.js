@@ -8,6 +8,19 @@
 
 'use strict';
 
+function mergeHashes () {
+    var args = Array.prototype.slice.call(arguments);
+    var output = {};
+    args.map(function(hash) {
+        for (var property in hash) {
+            if (hash.hasOwnProperty(property)) {
+                output[property] = hash[property];
+            }
+        }
+    });
+    return output;
+}
+
 module.exports = function(grunt) {
 
   var os = require('os');
@@ -19,34 +32,60 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('asset_render', 'injects assets into templates', function() {
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
-      delimiters: '{{ }}',
+      delimiters: '<!-- -->',
+      inject: false,
+      start_word: 'START',
+      end_word: 'END',
+      promotions: []
     });
 
+    var data = this.data;
     // Iterate over all specified file groups.
     this.files.forEach(function(filePair) {
-      var urls = [];
+      grunt.log.writeln("Prepairing files for " + filePair.dest);
+      var files = filePair.src;
 
       // format source filepaths.
-      var src = filePair.src.map(function(filepath) {
-        var url = filepath;
-        if (os.platform() === 'win32') {
-          // correct path separator
-          url = url.replace(/\\/g, '/');
-        }
-        grunt.log.writeln('adding url: ' + url);
-        urls.push({'url':filepath});
-      });
+      if (filePair.src.length === 0) {
+        grunt.log.writeln("    no input files found, skipping...");
+        return;
+      }
+
+      if (options.promotions.length > 0) {
+        var globSort = require('../lib/glob-sort');
+        files = globSort(files, options.promotions);
+      }
 
       var template = grunt.file.read(options.template);
       
-      template = hogan.compile(template, {delimiters: options.delimiters});
+      template = hogan.compile(template);
 
-      var output = template.render({'urls':urls});
+      files = files.map(function(filepath) {
+        grunt.log.writeln('    found : ' + filepath);
+        return {'file':filepath};
+      });
+
+      var output = template.render({'files':files});
+      output = output.replace(/(?:\n|\r\n)+\s*$/, '');
+
+      if (options.inject) {
+        var inject = require('../lib/inject.js');
+        var injectionOptions = {
+          start_token: options.start_word,
+          end_token: options.end_word,
+          delimiters: options.delimiters,
+          error_context: filePair.dest
+        };
+        var input = grunt.file.read(filePair.dest);
+        output = inject(input, output, injectionOptions);
+        if (output === undefined) {
+          grunt.warn("No files updated, check destination file.");
+        }
+      }
 
       grunt.file.write(filePair.dest, output);
-
-      // Print a success message.
       grunt.log.writeln('File "' + filePair.dest + '" updated.');
+      
     });
   });
 

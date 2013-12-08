@@ -26,10 +26,12 @@ In your project's Gruntfile, add a section named `asset_render` to the data obje
 grunt.initConfig({
   asset_render: {
     options: {
-      template: 'path_to_my_handlebars_template',
+      template: 'path/to/template.handlebars',
     },
     your_target: {
-      // Target-specific file lists and/or options go here.
+      files: {
+        'dest/output.txt' : ['css/**/*.css', 'img/file.jpg']
+      }
     },
   },
 });
@@ -42,43 +44,214 @@ Type: `String`
 
 the path to your handlebars template.
 
+#### options.inject
+Type: `Boolean`
+Default value: `false`
+
+if this is true, templates will be merged into the destination file rather than overwriting it.
+Useful for linking assets (i.e, stylesheets, scripts, e.t.c)
+
+#### options.promotions
+Type: `Array`
+Default value: `[]`
+
+useful if certain assets need to be prioritized over others.
+Read the section on [promotions](#promotions) below.
+
+### Injection options.
+The options below are only used when `options.inject` is `true`
+Read the sction on [injection](#injection) below.
+
 #### options.delimiters
 Type: `String`
-Default value: `'{{ }}'`
+Default value: `'<!-- -->'`
 
-delimiters for the template engine to use.
+the injection engine uses these to locate opening and closing tags.
+**note** they are space separated.
 
-### Usage Examples
+#### options.start_word
+Type: `String`
+Default value: `'START'`
 
-#### Default Options
-In this example, the default options are used to write script tags.
+the injection engine uses this to validate an opening tag.
 
+#### options.end_word
+Type: `String`
+Default value: `'END'`
+
+the injection engine uses this to validate a closing tag.
+
+## Usage Examples
+
+#### Rendering templates
+In this example, we use a template to render several files.
+
+Our template
+
+`templates/list_assets.handlebars`
+```handlebars
+<ul>
+{{#files}}
+    <li>{{file}}</li>
+{{/files}}
+</ul>
+```
+
+
+Our Task Configuration
+
+`Gruntfile.js`
 ```js
-grunt.initConfig({
-  asset_render: {
+asset_render: {
+  render_to_file: {
+    options: {
+      template: 'templates/list_assets.handlebars'
+    },
+
+    files: {
+      'dest/my_scripts.html': 'js/**/*.js',
+      'dest/my_images.html': 'img/**/*{jpg,png,jpeg}',
+      'dest/my_documents.html': [
+                              'docs/budget/june2013.xls',
+                              'docs/statements/*.pdf',
+                              '!docs/statements/*2012.pdf'
+                              ],
+    }
+  },
+},
+```
+
+
+With the above configuration, the task will create several files. Lets look at one of them:
+
+`dest/my_images.html`
+```html
+<ul>
+  <li>img/me/myface.jpg</li>
+  <li>img/icanhazcheezeburger.png</li>
+</ul>
+```
+
+## Injection
+Rendering templates is already cool, but usually we want to include our templates into other files.
+
+We can use the injection feature to achieve this. The injection engine examines the destination file for opening and closing
+tags, by default `'<!-- START -->'` and `'<!-- END -->'`. The injection engine will replace the content of these tags with your template.
+
+First we define our destination file.
+
+`dest/index.html`
+```html
+<html>
+  <head>
+    <title>my image gallery</title>
+    <style>
+    .thumbnail {float:left;}
+    </style>
+  </head>
+  <body>
+    <!-- START -->
+    <!-- END -->
+  </body>
+</html>
+```
+
+Then our template.
+
+`templates/thumbnails.handlebars`
+```handlebars
+{{#files}}
+  <div class="thumbnail">
+    <img src="{{file}}">
+  </div>
+{{/files}}
+```
+
+And finally remember to activate the `inject` option.
+
+`Gruntfile.js`
+```js
+asset_render: {
+  my_cat_gallery: {
+    options: {
+      template: 'templates/thumbnails.handlebars',
+      inject: true,
+    },
+
+    files: {
+      'dest/index.html: 'gallery/cats/**/*'
+    }
+  },
+}
+```
+
+The result is that our rendered template will be merged into the destination file, so:
+```html
+<html>
+  <head>
+    <title>my image gallery</title>
+    <style>
+    .thumbnail {float:left;}
+    </style>
+  </head>
+  <body>
+    <!-- START -->
+    <div class="thumbnail">
+      <img src="gallery/cats/socks_sleeping.jpg">
+    </div>
+    <div class="thumbnail">
+      <img src="gallery/cats/socks_turning_away.jpg">
+    </div>
+    <!-- END -->
+  </body>
+</html>
+```
+
+## Promotions
+Sometimes the order that assets are rendered is important. For example if you are using a javascript library (i.e JQuery), you would like it to be added to your page before your script or plugins. Or if one stylesheet should override another. You get the idea.
+
+Here is an example using JQuery.
+```js
+asset_render: {
+  scripts: {
     options: {
       template: 'templates/scripts_include.handlebars',
+      inject: true,
+      promotions: ['**/jquery.js', '**/jquery.*']
     },
+
     files: {
-      'dest/output.html': 'src/**/*.js',
-    },
-  },
-});
+      'index.html': 'js/**/*.js'
+    }
+  }
+}
 ```
-our template `templates/scripts_include.handlebars` :
+
+In the above example we have two promotions.
+  1. `'**/jquery.js'` this promotes JQuery
+  2. `'**/jquery.*'` this promotes JQuery plugins (i.e 'jquery.fittext.js')
+
+This means that Jquery will be promoted to the top, _then_ it's plugins, and _finally_ all other scripts will come after.
+
+### Globing
+
+you can use all the syntax you use to define source files. You can even do this:
+
+```js
+options = [
+  ['js/vendor/**/*.js', '!js/vendor/indipendent.js']
+]
 ```
-{{#urls}}
-  <script src="{{url}}"></script>
-{{/urls}}
-```
+In the above case we want vendor styles to be priorotized but there's one that doesn't need to be prioritized; perhaps it runs on it's own. Just remember to enclose everything in an array `[]`.
+
+Have fun, and keep it simple!
 
 ## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
+In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/). All your work should be in the development branch.
 
 ## Release History
-### v1.0 presenting grunt-asset-render!
-The first release!
+#### v1.0 presenting grunt-asset-render!
 
-### v1.0.1 small fixes
-fixed: vesrioning
-updated: documentation
+#### v1.0.1 fixes
+  - fixed versioning
+  - updated docs

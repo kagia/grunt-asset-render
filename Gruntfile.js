@@ -28,26 +28,112 @@ module.exports = function(grunt) {
       tests: ['tmp'],
     },
 
-    // Configuration to be run (and then tested).
     asset_render: {
-      default_options: {
+
+      // the rendered template is dumped to the destination
+      render_to_file: {
         options: {
-          template: 'test/fixtures/default.handlebars'
+          template: 'test/fixtures/list_assets.handlebars'
         },
+
         files: {
-          'tmp/default_options.html': ['test/fixtures/testing', 'test/fixtures/123'],
-        },
+          'tmp/no_asset.html': 'will_not_match.any',
+          'tmp/all_assets.html': 'test/fixtures/assets/**/*',
+          'tmp/some_assets.html': [
+                                  'test/fixtures/assets/test.css',
+                                  'test/fixtures/assets/test.js',
+                                  'test/fixtures/assets/*.html',
+                                  '!test/fixtures/assets/testing2.html'
+                                  ],
+        }
       },
 
-      custom_options: {
+      // the template is merged into an existing file
+      inject_to_file: {
         options: {
-          template: 'test/fixtures/custom.handlebars',
-          delimiters: '!... ...'
+          template: 'test/fixtures/list_assets.handlebars',
+          inject: true
         },
 
         files: {
-          'tmp/custom_options.html': ['test/fixtures/testing', 'test/fixtures/123'],
+          'test/fixtures/no_asset_injection.html': 'will_not_match.any',
+
+          'test/fixtures/some_assets_injection.html': [
+                                  'test/fixtures/assets/test.css',
+                                  'test/fixtures/assets/test.js',
+                                  'test/fixtures/assets/*.html',
+                                  '!test/fixtures/assets/testing2.html'
+                                  ],
+        }
+      },
+
+      // tags other than the default are used as injection targets
+      custom_tag_injection: {
+        options: {
+          template: 'test/fixtures/list_assets.handlebars',
+          inject: true,
+          start_word: 'INJECT HERE',
+          end_word: 'STOP',
+          delimiters: '## ##'
         },
+
+        files: {
+          'test/fixtures/custom_delimiters_injection.html': [
+                                  'test/fixtures/assets/test.css',
+                                  'test/fixtures/assets/test.js',
+                                  'test/fixtures/assets/*.html',
+                                  '!test/fixtures/assets/testing2.html'
+                                  ],
+        }
+      },
+
+      // if the opening and closing tags share the same line so should a single line injection
+      inline_injection: {
+        options: {
+          template: 'test/fixtures/comma_separated_assets.handlebars',
+          inject: true
+        },
+
+        files: {
+          'test/fixtures/inline_injection.html': [
+                                  'test/fixtures/assets/test.css',
+                                  'test/fixtures/assets/test.js',
+                                  'test/fixtures/assets/*.html',
+                                  '!test/fixtures/assets/testing2.html'
+                                  ],
+        }
+      },
+
+      promotion: {
+        options: {
+          template: 'test/fixtures/list_assets.handlebars',
+          promotions: ['test/fixtures/assets/test.js']
+        },
+
+        files: {
+          'tmp/asset_promotion.html': [
+                                  'test/fixtures/assets/test.css',
+                                  'test/fixtures/assets/test.js',
+                                  'test/fixtures/assets/*.html',
+                                  '!test/fixtures/assets/testing2.html'
+                                  ],
+        }
+      },
+
+      alternate_promotion: {
+        options: {
+          template: 'test/fixtures/list_assets.handlebars',
+          promotions: ['test/fixtures/assets/testing.html']
+        },
+
+        files: {
+          'tmp/alternate_asset_promotion.html': [
+                                  'test/fixtures/assets/test.css',
+                                  'test/fixtures/assets/test.js',
+                                  'test/fixtures/assets/*.html',
+                                  '!test/fixtures/assets/testing2.html'
+                                  ]
+        }
       }
     },
 
