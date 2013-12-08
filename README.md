@@ -255,3 +255,10 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 #### v1.0.1 fixes
   - fixed versioning
   - updated docs
+
+#### v2.0.0 new features
+  - now you can inject templates into other files
+  - support for asset re-ordering
+  - **template context has changed**
+    - `urls` is now `files`
+    - `url` is now `file`
