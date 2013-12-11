@@ -1,7 +1,7 @@
 {
   "name": "grunt-asset-render",
   "description": "renders templates based on your assets",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "homepage": "https://github.com/kagia/grunt-asset-render",
   "author": {
     "name": "Benjamin Kagia",
@@ -42,7 +42,8 @@
     "template",
     "inject",
     "link",
-    "publish"
+    "publish",
+    "gruntplugin"
   ],
   "dependencies": {
     "hogan.js": "~2.0.0",

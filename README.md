@@ -2,6 +2,10 @@
 
 > injects assets into templates
 
+[![Build Status](https://travis-ci.org/kagia/grunt-asset-render.png?branch=v2.0.0)](https://travis-ci.org/kagia/grunt-asset-render)
+
+[![NPM](https://nodei.co/npm/grunt-asset-render.png?downloads=true)](https://nodei.co/npm/grunt-asset-render/)
+
 ## Getting Started
 This plugin requires Grunt `~0.4.2`
 
@@ -19,23 +23,69 @@ grunt.loadNpmTasks('grunt-asset-render');
 
 ## The "asset_render" task
 
-### Overview
-In your project's Gruntfile, add a section named `asset_render` to the data object passed into `grunt.initConfig()`.
+### Quick Start!
+Lets assume you want to link scripts into your HTML.
 
-```js
-grunt.initConfig({
-  asset_render: {
-    options: {
-      template: 'path/to/template.handlebars',
-    },
-    your_target: {
-      files: {
-        'dest/output.txt' : ['css/**/*.css', 'img/file.jpg']
+  1. start by creating an entry in your Gruntfile.
+    ```js
+    grunt.initConfig({
+      asset_render: {
+        link_my_scripts: {
+          cwd: '../../path/to/my/website',
+          src: ['js/*.js', 'js/vendor/*.js'],
+          dest: '../path/to/my/website/index.html'
+        }
       }
-    },
-  },
-});
-```
+    });
+    ```
+
+    it's important to set your `cwd` to the path you want your resources to be relative to.
+
+  2. next we need a template. here's mine `templates/scripts.handlebars`.
+    ```handlebars
+    {{#files}}
+    <script src="{{file}}"></script>
+    {{/files}}
+    ```
+
+  3. lets update our configuration.
+    ```js
+    grunt.initConfig({
+      asset_render: {
+        link_my_scripts: {
+          options: {
+            template: 'templates/scripts.handlebars',
+            inject: true,
+          },
+          cwd: '../../path/to/my/website',
+          src: ['js/*.js', 'js/vendor/*.js'],
+          dest: '../path/to/my/website/index.html'
+        }
+      }
+    });
+    ```
+
+  4. That's it. now you can do this.
+    ```shell
+    grunt asset_render:link_my_scripts
+    ```
+
+  5. Assuming you've included the `<!-- START -->` and `<!-- END -->` tags in your html, your html will now look like:
+     ```html
+     <html>
+      <head>
+        <!-- START -->
+        <script src="js/myscript.js"></script>
+        <script src="js/vendor/script.js"></script>
+        <!-- END -->
+      </head>
+     <body>....</body>
+     </html>
+     ```
+
+     For more customization options, and mind-blowing features see below!
+    
+=====
 
 ### Options
 
@@ -179,7 +229,7 @@ asset_render: {
     },
 
     files: {
-      'dest/index.html: 'gallery/cats/**/*'
+      'dest/index.html': 'gallery/cats/**/*'
     }
   },
 }
@@ -238,9 +288,17 @@ This means that Jquery will be promoted to the top, _then_ it's plugins, and _fi
 you can use all the syntax you use to define source files. You can even do this:
 
 ```js
-options = [
-  ['js/vendor/**/*.js', '!js/vendor/indipendent.js']
-]
+asset_render: {
+  my_target: {
+    options: {
+      promotions: [
+        ['js/vendor/**/*.js', '!js/vendor/indipendent.js']
+      ] 
+    },
+
+    // files
+  }
+},
 ```
 In the above case we want vendor styles to be priorotized but there's one that doesn't need to be prioritized; perhaps it runs on it's own. Just remember to enclose everything in an array `[]`.
 
@@ -262,3 +320,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
   - **template context has changed**
     - `urls` is now `files`
     - `url` is now `file`
+
+#### v2.0.1 better documentation
+  - fixed several typos
+  - added badges incicating health of the project
