@@ -229,7 +229,7 @@ asset_render: {
     },
 
     files: {
-      'dest/index.html: 'gallery/cats/**/*'
+      'dest/index.html': 'gallery/cats/**/*'
     }
   },
 }
@@ -288,9 +288,17 @@ This means that Jquery will be promoted to the top, _then_ it's plugins, and _fi
 you can use all the syntax you use to define source files. You can even do this:
 
 ```js
-options = [
-  ['js/vendor/**/*.js', '!js/vendor/indipendent.js']
-]
+asset_render: {
+  my_target: {
+    options: {
+      promotions: [
+        ['js/vendor/**/*.js', '!js/vendor/indipendent.js']
+      ] 
+    },
+
+    // files
+  }
+},
 ```
 In the above case we want vendor styles to be priorotized but there's one that doesn't need to be prioritized; perhaps it runs on it's own. Just remember to enclose everything in an array `[]`.
 
