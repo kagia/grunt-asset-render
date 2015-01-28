@@ -321,6 +321,11 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
     - `urls` is now `files`
     - `url` is now `file`
 
+
 #### v2.0.1 better documentation
   - fixed several typos
   - added badges incicating health of the project
+
+
+#### v2.0.2 maintainance
+  - updated dependencies

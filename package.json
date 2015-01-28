@@ -1,7 +1,9 @@
 {
   "name": "grunt-asset-render",
   "description": "renders templates based on your assets",
-  "version": "2.0.1",
+
+  "version": "2.0.2",
+
   "homepage": "https://github.com/kagia/grunt-asset-render",
   "author": {
     "name": "Benjamin Kagia",
@@ -29,11 +31,11 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "grunt-contrib-jshint": "~0.6.0",
-    "grunt-contrib-clean": "~0.4.0",
-    "grunt-contrib-nodeunit": "~0.2.0",
     "grunt": "~0.4.2",
-    "grunt-cli": "~0.1.11"
+    "grunt-cli": "~0.1.11",
+    "grunt-contrib-clean": "^0.4.1",
+    "grunt-contrib-jshint": "^0.6.5",
+    "grunt-contrib-nodeunit": "^0.2.2"
   },
   "peerDependencies": {
     "grunt": "~0.4.2"
