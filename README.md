@@ -320,3 +320,6 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
   - **template context has changed**
     - `urls` is now `files`
     - `url` is now `file`
+
+#### v2.0.2 maintainance
+  - updated dependencies
