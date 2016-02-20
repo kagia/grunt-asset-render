@@ -1,9 +1,7 @@
 {
   "name": "grunt-asset-render",
   "description": "renders templates based on your assets",
-
   "version": "2.0.2",
-
   "homepage": "https://github.com/kagia/grunt-asset-render",
   "author": {
     "name": "Benjamin Kagia",
@@ -38,7 +36,7 @@
     "grunt-contrib-nodeunit": "^0.2.2"
   },
   "peerDependencies": {
-    "grunt": "~0.4.2"
+    "grunt": ">=0.4.0"
   },
   "keywords": [
     "template",
